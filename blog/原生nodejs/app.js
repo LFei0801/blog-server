@@ -1,17 +1,22 @@
 const handleBlogRoute = require('./router/blog')
 const handleUserRoute = require('./router/user')
+const qs = require('querystring')
 
 const serverHandle = (req,res)=>{
   res.setHeader('Content-Type','application/json')
-  const url = req.url
-  req.path = url.split("?")[0]
+  // 解析路径，绑定在req.path属性上
+  req.path = req.url.split("?")[0]
+  // 解析请求参数，绑定在req.query属性上
+  req.query = qs.parse(req.url.split('?')[1])
 
+  // 博客路由
   const blogData = handleBlogRoute(req,res)
   if(blogData){
     res.end(JSON.stringify(blogData))
     return
   }
 
+  // 用户路由
   const userData = handleUserRoute(req,res)
   if(userData){
     res.end(JSON.stringify(userData))
