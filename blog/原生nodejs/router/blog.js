@@ -1,5 +1,5 @@
 const {SuccessModal,ErrorModal} = require('../modal/resModal')
-const {getBlogList,getSingleBlog} = require('../controller/blog')
+const {getBlogList,getSingleBlog,newBlog} = require('../controller/blog')
 
 const handleBlogRoute = (req,res) => {
   const method = req.method
@@ -21,9 +21,9 @@ const handleBlogRoute = (req,res) => {
 
   // 新增一篇博客
   if(method === "POST" && req.path === '/api/blog/new'){
-    return {
-      msg:"新增一篇博客"
-    }
+    const blogData = req.body
+    const blog =  newBlog(blogData)
+    return new SuccessModal(blog)
   }
 
   // 更新一篇博客

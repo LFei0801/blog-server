@@ -29,7 +29,15 @@ const getSingleBlog = (id)=>{
   }
 }
 
+// 新增一篇博客
+const newBlog = (blogData = {}) => {
+  return {
+    id:3
+  }
+}
+
 module.exports = {
   getBlogList,
-  getSingleBlog
+  getSingleBlog,
+  newBlog
 }
