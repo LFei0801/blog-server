@@ -15,33 +15,40 @@ const handleBlogRoute = (req,res) => {
   if(method === "GET" && req.path === '/api/blog/list'){
     const author = req.query.author || ""
     const keyWord = req.query.keyword || ""
-    const listData = getBlogList(author,keyWord)
-    return new SuccessModal(listData)
+    return getBlogList(author,keyWord).then(data=>{
+      return data.length ? new SuccessModal(data) : new ErrorModal("数据不存在")
+    }).catch(() => new ErrorModal("server error"))
   }
 
   // 获取一篇博客接口
   if(method === "GET" && req.path === '/api/blog/detail'){
-    const id = req.query.id
-    const blog = getSingleBlog(id)
-    return new SuccessModal(blog)
+    return getSingleBlog(id)
+      .then(data => new SuccessModal(data))
+      .catch(() => new ErrorModal("server error"))
   }
 
   // 新增一篇博客
   if(method === "POST" && req.path === '/api/blog/new'){
+    req.body.author = "admin" // 正常来说，req.body是不会有author字段的，用假数据测试
     const blogData = req.body
-    const blogId=  newBlog(blogData)
-    return new SuccessModal(blogId)
+    return newBlog(blogData)
+      .then(id => new SuccessModal(id))
+      .catch(() => new ErrorModal("server error"))
   }
 
   // 更新一篇博客 通过id
   if(method === "POST" && req.path === '/api/blog/update'){
     const blogData = req.body
-    return updateBlog(id, blogData) ? new SuccessModal("更新博客成功") : new ErrorModal("更新博客失败")
+    console.log(blogData)
+    return updateBlog(id,blogData)
+      .then(isSuccess => isSuccess ? new SuccessModal() : new ErrorModal("更新博客失败"))
   }
 
   // 删除一篇博客 通过id
   if(method === 'POST' && req.path === '/api/blog/del'){
-    return delBlog(id) ? new SuccessModal("删除博客成功") : new ErrorModal("删除博客失败")
+    const { id } = req.body
+    return  delBlog(id,"admin")
+      .then(isSuccess => isSuccess ? new SuccessModal() : new ErrorModal("删除博客失败"))
   }
 }
 

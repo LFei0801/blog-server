@@ -10,12 +10,11 @@ const serverHandle = (req,res)=>{
   // 解析请求参数，绑定在req.query属性上
   req.query = qs.parse(req.url.split('?')[1])
   // 解析post请求数据
-  getPostData(req).then(data => {
+  getPostData(req).then(async data => {
     // 将post请求传入的数据绑定在req.body对象属性上
     req.body = data
 
-    // 博客路由
-    const blogData = handleBlogRoute(req,res)
+    const blogData = await handleBlogRoute(req,res)
     if(blogData){
       res.end(JSON.stringify(blogData))
       return
