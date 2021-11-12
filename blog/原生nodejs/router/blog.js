@@ -23,7 +23,7 @@ const handleBlogRoute = (req,res) => {
   // 获取一篇博客接口
   if(method === "GET" && req.path === '/api/blog/detail'){
     return getSingleBlog(id)
-      .then(data => new SuccessModal(data))
+      .then(data => data.id ? new SuccessModal(data): new ErrorModal("数据不存在"))
       .catch(() => new ErrorModal("server error"))
   }
 

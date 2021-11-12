@@ -21,7 +21,7 @@ const serverHandle = (req,res)=>{
     }
 
     // 用户路由
-    const userData = handleUserRoute(req,res)
+    const userData = await handleUserRoute(req,res)
     if(userData){
       res.end(JSON.stringify(userData))
       return;

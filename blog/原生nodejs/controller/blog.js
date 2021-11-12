@@ -25,7 +25,7 @@ const getBlogList = (author,keyword) => {
  */
 const getSingleBlog = (id)=>{
   const sql = `select * from blogs where id='${id}';`
-  return exec(sql).then(rows => rows[0])
+  return exec(sql).then(rows => rows[0] || {})
 }
 
 /***
