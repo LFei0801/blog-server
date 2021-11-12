@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon blog/原生nodejs/www.js",
-    "dev":"cross-env NODE_ENV=dev nodemon blog/原生nodejs/www.js",
+    "dev": "cross-env NODE_ENV=dev nodemon blog/原生nodejs/www.js",
     "prd": "cross-env NODE_ENV=production nodemon blog/原生nodejs/www.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -13,6 +13,7 @@
   "author": "[LFei0801]",
   "license": "ISC",
   "dependencies": {
-    "cross-env": "^7.0.3"
+    "cross-env": "^7.0.3",
+    "mysql": "^2.18.1"
   }
 }
