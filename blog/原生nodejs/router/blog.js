@@ -1,8 +1,15 @@
 const {SuccessModal,ErrorModal} = require('../modal/resModal')
-const {getBlogList,getSingleBlog,newBlog} = require('../controller/blog')
+const {
+  getBlogList,
+  getSingleBlog,
+  newBlog,
+  updateBlog,
+  delBlog
+} = require('../controller/blog')
 
 const handleBlogRoute = (req,res) => {
   const method = req.method
+  const id = req.query.id
 
   // 获取博客列表
   if(method === "GET" && req.path === '/api/blog/list'){
@@ -22,22 +29,19 @@ const handleBlogRoute = (req,res) => {
   // 新增一篇博客
   if(method === "POST" && req.path === '/api/blog/new'){
     const blogData = req.body
-    const blog =  newBlog(blogData)
-    return new SuccessModal(blog)
+    const blogId=  newBlog(blogData)
+    return new SuccessModal(blogId)
   }
 
-  // 更新一篇博客
+  // 更新一篇博客 通过id
   if(method === "POST" && req.path === '/api/blog/update'){
-    return {
-      msg:"更新一篇博客"
-    }
+    const blogData = req.body
+    return updateBlog(id, blogData) ? new SuccessModal("更新博客成功") : new ErrorModal("更新博客失败")
   }
 
-  // 删除一篇博客
+  // 删除一篇博客 通过id
   if(method === 'POST' && req.path === '/api/blog/del'){
-    return {
-      msg:'删除一篇博客'
-    }
+    return delBlog(id) ? new SuccessModal("删除博客成功") : new ErrorModal("删除博客失败")
   }
 }
 

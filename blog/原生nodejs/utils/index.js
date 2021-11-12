@@ -8,12 +8,11 @@ const getPostData = (req)=>{
     let postData = ''
     req.on('data',chunk => postData += chunk.toString())
     req.on('end',()=>{
-      console.log(typeof postData)
       if(!postData){
         resolve({})
         return
       }
-      resolve(JSON.parse(JSON.stringify(postData)))
+      resolve(JSON.parse(postData)) //Object类型
     })
   }))
 }
