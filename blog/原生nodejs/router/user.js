@@ -1,13 +1,12 @@
 const {login} = require('../controller/user')
 const {SuccessModal, ErrorModal} = require("../modal/resModal");
-const {getCookieExpires} = require("../utils");
 
 const handleUserRoute = (req,res) => {
   if(req.method === 'GET' && req.path === '/api/user/login'){
     const { username,password } = req.query
     return login(username,password).then(data => {
       if(data.username){
-        // 设置cookie
+        // 绑定userid与用户真实信息，相当于 SESSION_DATA = {用户id：{username,password}}
         req.session.username = data.username
         req.session.reqlname = data.realname
         return new SuccessModal("登录成功")

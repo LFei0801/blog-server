@@ -14,12 +14,12 @@ const serverHandle = (req,res)=>{
   parseCookie(req)
   // 解析 session数据
   const { needSetCookie,userid } = parseSession(req)
-  console.log("app: ",needSetCookie,userid)
   // 解析post请求数据
   getPostData(req).then(async data => {
     // 将post请求传入的数据绑定在req.body对象属性上
     req.body = data
 
+    // 博客路由
     const blogData = await handleBlogRoute(req,res)
     if(blogData){
       if(needSetCookie){
@@ -33,7 +33,6 @@ const serverHandle = (req,res)=>{
     const userData = await handleUserRoute(req,res)
     if(userData){
       if(needSetCookie){
-        console.log("userid is ",userid)
         res.setHeader('Set-Cookie',`userid=${userid};path=/;httpOnly;expires=${getCookieExpires()}`)
       }
       res.end(JSON.stringify(userData))
@@ -50,5 +49,4 @@ const serverHandle = (req,res)=>{
 
 module.exports = {
   serverHandle,
-  SESSION_DATA
 }

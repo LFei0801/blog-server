@@ -52,13 +52,15 @@ const parseSession = (req) => {
     // 如果req.cookie中不存在userid这个属性，则需要设置cookie
     needSetCookie = true
     // 初始化userid
-    userid = `${Date.now()}_${Math.round(Math.random())}`
+    userid = `${Date.now()}_${Math.round(Math.random() * 1000)}`
     SESSION_DATA[userid] = {}
   }
   // 绑定到 req.session这个对象属性中，方便后续操作
   req.session = SESSION_DATA[userid]
   return { needSetCookie,userid }
 }
+
+
 module.exports = {
   getPostData,
   parseCookie,
