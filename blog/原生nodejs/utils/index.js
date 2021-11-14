@@ -1,4 +1,5 @@
 // 解析post请求数据
+const {get, set} = require("../db/redis");
 const getPostData = (req)=>{
   return new Promise(((resolve, reject) => {
     if(req.method !== 'POST' || req.headers['content-type'] !== 'application/json'){
@@ -38,25 +39,32 @@ const getCookieExpires = () => {
 }
 
 // 解析Session
-const SESSION_DATA = {}
-const parseSession = (req) => {
+/**
+ *需要 从session中获取sessionId这个数据
+ * 如果有这个数据，则不需要设置cookie
+ * 没有这个数据，就需要设置cookie
+ */
+const parseSession = async (req) => {
   // 是否需要设置cookie
   let needSetCookie = false
   let userid = req.cookie.userid
-  if(userid){
-    // 如果SESSION_DATA中不存在userid字段，则初始化SESSION_DATA[userid] 字段
-    if(!SESSION_DATA[userid]){
-      SESSION_DATA[userid] = {}
-    }
-  }else{
-    // 如果req.cookie中不存在userid这个属性，则需要设置cookie
+  req.session = {}
+  // 如果前端没有返回userid，则在redis设置这个userid
+  if(!userid){
     needSetCookie = true
-    // 初始化userid
     userid = `${Date.now()}_${Math.round(Math.random() * 1000)}`
-    SESSION_DATA[userid] = {}
   }
-  // 绑定到 req.session这个对象属性中，方便后续操作
-  req.session = SESSION_DATA[userid]
+  //  如果redis数据库中没有这个userid,则需要存储
+  const val = await get(userid)
+  if(val === null){
+    needSetCookie = true
+    set(userid,JSON.stringify({}))
+  }else{
+    // 有的话 ，绑定到req.session
+    req.session = val
+  }
+  // 绑定属性
+  req.sessionId = userid
   return { needSetCookie,userid }
 }
 
@@ -66,5 +74,4 @@ module.exports = {
   parseCookie,
   getCookieExpires,
   parseSession,
-  SESSION_DATA
 }

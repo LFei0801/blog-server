@@ -12,13 +12,12 @@ const serverHandle = (req,res)=>{
   req.query = qs.parse(req.url.split('?')[1])
   // 解析cookie数据
   parseCookie(req)
-  // 解析 session数据
-  const { needSetCookie,userid } = parseSession(req)
   // 解析post请求数据
   getPostData(req).then(async data => {
     // 将post请求传入的数据绑定在req.body对象属性上
     req.body = data
-
+    // 解析 session数据
+    const { needSetCookie,userid } = await parseSession(req)
     // 博客路由
     const blogData = await handleBlogRoute(req,res)
     if(blogData){
