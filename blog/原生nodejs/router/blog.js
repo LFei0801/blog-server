@@ -39,7 +39,6 @@ const handleBlogRoute = (req,res) => {
   // 更新一篇博客 通过id
   if(method === "POST" && req.path === '/api/blog/update'){
     const blogData = req.body
-    console.log(blogData)
     return updateBlog(id,blogData)
       .then(isSuccess => isSuccess ? new SuccessModal() : new ErrorModal("更新博客失败"))
   }

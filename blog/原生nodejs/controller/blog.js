@@ -62,7 +62,6 @@ const updateBlog = (id,blogData = {}) => {
  * @returns {Promise<boolean>} 是否删除成功
  */
 const delBlog = (id,author) => {
-  console.log(id,author)
   const sql = `delete from blogs where id=${id} and author='${author}';`
   return exec(sql).then(data => data.affectedRows > 0)
 }

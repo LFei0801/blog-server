@@ -2,6 +2,7 @@ const handleBlogRoute = require('./router/blog')
 const handleUserRoute = require('./router/user')
 const qs = require('querystring')
 const {getPostData} = require('./utils/index')
+const {parseCookie, parseSession, getCookieExpires,SESSION_DATA} = require("./utils");
 
 const serverHandle = (req,res)=>{
   res.setHeader('Content-Type','application/json')
@@ -9,6 +10,11 @@ const serverHandle = (req,res)=>{
   req.path = req.url.split("?")[0]
   // 解析请求参数，绑定在req.query属性上
   req.query = qs.parse(req.url.split('?')[1])
+  // 解析cookie数据
+  parseCookie(req)
+  // 解析 session数据
+  const { needSetCookie,userid } = parseSession(req)
+  console.log("app: ",needSetCookie,userid)
   // 解析post请求数据
   getPostData(req).then(async data => {
     // 将post请求传入的数据绑定在req.body对象属性上
@@ -16,6 +22,9 @@ const serverHandle = (req,res)=>{
 
     const blogData = await handleBlogRoute(req,res)
     if(blogData){
+      if(needSetCookie){
+        res.setHeader('Set-Cookie',`userid=${userid};path=/;httpOnly;expires=${getCookieExpires()}`)
+      }
       res.end(JSON.stringify(blogData))
       return
     }
@@ -23,6 +32,10 @@ const serverHandle = (req,res)=>{
     // 用户路由
     const userData = await handleUserRoute(req,res)
     if(userData){
+      if(needSetCookie){
+        console.log("userid is ",userid)
+        res.setHeader('Set-Cookie',`userid=${userid};path=/;httpOnly;expires=${getCookieExpires()}`)
+      }
       res.end(JSON.stringify(userData))
       return;
     }
@@ -35,4 +48,7 @@ const serverHandle = (req,res)=>{
 }
 
 
-module.exports = serverHandle
+module.exports = {
+  serverHandle,
+  SESSION_DATA
+}
