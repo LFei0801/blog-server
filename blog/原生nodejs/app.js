@@ -2,9 +2,13 @@ const handleBlogRoute = require('./router/blog')
 const handleUserRoute = require('./router/user')
 const qs = require('querystring')
 const {getPostData} = require('./utils/index')
-const {parseCookie, parseSession, getCookieExpires,SESSION_DATA} = require("./utils");
+const {parseCookie, parseSession, getCookieExpires} = require("./utils");
+const {assess} = require('./utils/log')
 
-const serverHandle = (req,res)=>{
+const serverHandle = (req,res) => {
+  // 记录日志
+  assess(`${req.method} -- ${req.url} -- ${req.headers['user-agent']} -- ${Date.now()}`)
+  // 设置放回数据格式
   res.setHeader('Content-Type','application/json')
   // 解析路径，绑定在req.path属性上
   req.path = req.url.split("?")[0]

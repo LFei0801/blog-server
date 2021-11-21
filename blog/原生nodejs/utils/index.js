@@ -1,5 +1,6 @@
-// 解析post请求数据
 const {get, set} = require("../db/redis");
+
+// 解析post请求数据
 const getPostData = (req)=>{
   return new Promise(((resolve, reject) => {
     if(req.method !== 'POST' || req.headers['content-type'] !== 'application/json'){
